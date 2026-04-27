@@ -1,0 +1,6 @@
+juan 22 1.77
+luis 21 1.80
+pedro 20 1.73
+paco 19 1.79
+jesus 30 1.92
+javier 12 1.56
