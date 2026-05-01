@@ -14,7 +14,7 @@ public class Ejercicio07 {
 		
 		ArrayList<String> listaContacto = new ArrayList<>();
 		
-		listaContacto = cargarDatos(listaContacto);
+		cargarDatos(listaContacto);
 		
 		iniciar(listaContacto);
 	}
@@ -35,7 +35,7 @@ public class Ejercicio07 {
 		
 		try {
 			opcion = sc.nextInt();
-			
+			sc.nextLine();
 		}catch(Exception e) {
 			System.out.println("ERROR: Introduzca un número entero.");
 		}
@@ -43,16 +43,16 @@ public class Ejercicio07 {
 		switch(opcion) {
 		
 		case 1:
-			añadirContacto(lista);
+			añadirContacto(lista, sc);
 			break;
 		case 2:
-			buscarPorNombre(lista);
+			buscarPorNombre(lista, sc);
 			break;
 		case 3:
-			mostrarContactos(lista);
+			System.out.println(lista);
 			break;
 		case 4:
-			System.out.println("Saliendo del programa...");
+			salir(lista);
 			break;
 		default:
 			System.out.println("Introduzca una opcion valida");	
@@ -63,19 +63,17 @@ public class Ejercicio07 {
 		sc.close();
 	}
 
-	public static void añadirContacto(ArrayList<String> lista) {
-			
-		Scanner sc = new Scanner(System.in);
+	public static void añadirContacto(ArrayList<String> lista, Scanner sc) {
 		
-		if(lista.size() >= 20) {
+		if(lista.size() <= 20) {
 			
 			System.out.println("Introduzca su nombre: ");
-			String nombre = sc.next();
+			String nombre = sc.nextLine();
 		
 			System.out.println("Introduzca su telefono: ");
 			String telefono = sc.next();
 		
-			String contacto = "Nombre: " + nombre + " Teléfono: " + telefono + " | ";
+			String contacto = "Nombre: " + nombre + " Teléfono: " + telefono;
 			
 			lista.add(contacto);			
 		} else {
@@ -83,32 +81,55 @@ public class Ejercicio07 {
 		}
 	}
 	
-	public static void buscarPorNombre(ArrayList<String> lista) {
+	public static void buscarPorNombre(ArrayList<String> lista, Scanner sc) {
 		
-	}
-	
-	public static void mostrarContactos(ArrayList<String> lista) {
+		System.out.print("Introduce el nombre a buscar en contacto: ");
+		String nombreBuscar = sc.next().toUpperCase();
 		
-		
+		for(String datos: lista) {
+			 
+			String nombre = datos.substring(
+			        datos.indexOf("Nombre: ") + 8,
+			        datos.indexOf(" Teléfono:")
+			).trim().toUpperCase();
+			
+			if (nombreBuscar.equals(nombre)) {
+				
+				System.out.println(datos);
+			}
+		}
 	}
 	
 	public static ArrayList<String> cargarDatos(ArrayList<String> lista) {
 		
 		try(BufferedReader br = new BufferedReader(new FileReader("src/ejercicio07/Agenda.txt"))) {
 			
-			String contactos = br.readLine();
+			String contactos;
 			
-			if (contactos != null) {
-				
-				String[] partes = contactos.split("|");
-				
-				for (String p : partes) {
-		            lista.add(p);
+			while ((contactos = br.readLine()) != null) {
+		            lista.add(contactos);
 		        }
-			}				
+			
 		} catch(IOException e) {
 			System.out.println("Error al leer el archivo");
 		}
 		return lista;		
 	}
+	
+	public static void salir(ArrayList<String> lista) {
+
+	    try (BufferedWriter bw = new BufferedWriter(new FileWriter("src/ejercicio07/Agenda.txt"))) {
+
+	        for (String datos : lista) {
+	            bw.write(datos);
+	            bw.newLine();
+	        }
+
+	    } catch (IOException e) {
+	        System.out.println("ERROR de escritura");
+	    }
+
+	    System.out.println("Saliendo del programa...");
+	}
+
 }
